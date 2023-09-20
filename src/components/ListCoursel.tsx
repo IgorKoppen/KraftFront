@@ -1,36 +1,64 @@
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import Logo from "../../public/LogoKraftv2 1.svg";
 
 
-export default function ListCoursel({}){
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+
+import Image from "next/image";
+interface lista {
+    titulo: string,
+    nome: string,
+    descricao: string
+}
+export default function ListCoursel({titulo,nome,descricao} : lista){
     return(
-        <div className="carousel w-full">
-            <div id="slide1" className="carousel-item relative w-full">
-                <img src="/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" className="w-full" />
-                <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                    <a href="#slide4" className="btn btn-circle">❮</a>
-                    <a href="#slide2" className="btn btn-circle">❯</a>
+        <>
+            <h2 className="text-white px-32 py-10 text-4xl">{titulo}</h2>
+        <Swiper
+            modules={[Navigation, Pagination, Scrollbar, A11y]}
+            spaceBetween={5}
+            slidesPerView={3}
+            navigation
+            pagination={{ clickable: true }}
+            scrollbar={{ draggable: true }}
+            style={{padding: "5px 0 10rem 0"}}
+        >
+            <SwiperSlide style={{display: "grid", justifyItems: "center"}}>
+                <div className="card card-compact w-96 bg-base-100 shadow-xl">
+                <figure><Image src={Logo} alt={"Logo"} width={325} height={82} /></figure>
+                <div className="card-body">
+                    <h2 className="card-title">{nome}</h2>
+                    <p>{descricao}</p>
+                    <div className="card-actions justify-center py-2">
+                        <button className="btn btn-primary">Avaliar</button>
+                    </div>
                 </div>
-            </div>
-            <div id="slide2" className="carousel-item relative w-full">
-                <img src="/images/stock/photo-1609621838510-5ad474b7d25d.jpg" className="w-full" />
-                <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                    <a href="#slide1" className="btn btn-circle">❮</a>
-                    <a href="#slide3" className="btn btn-circle">❯</a>
+            </div></SwiperSlide>
+            <SwiperSlide style={{display: "grid", justifyItems: "center"}}><div className="card card-compact w-96 bg-base-100 shadow-xl">
+                <figure><Image src={Logo} alt={"Logo"} width={325} height={82} /></figure>
+                <div className="card-body">
+                    <h2 className="card-title">{nome}</h2>
+                    <p>{descricao}</p>
+                    <div className="card-actions justify-center py-2">
+                        <button className="btn btn-primary">Avaliar</button>
+                    </div>
                 </div>
-            </div>
-            <div id="slide3" className="carousel-item relative w-full">
-                <img src="/images/stock/photo-1414694762283-acccc27bca85.jpg" className="w-full" />
-                <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                    <a href="#slide2" className="btn btn-circle">❮</a>
-                    <a href="#slide4" className="btn btn-circle">❯</a>
+            </div></SwiperSlide>
+            <SwiperSlide style={{display: "grid", justifyItems: "center"}}><div className="card card-compact w-96 bg-base-100 shadow-xl">
+                <figure><Image src={Logo} alt={"Logo"} width={325} height={82} /></figure>
+                <div className="card-body">
+                    <h2 className="card-title">{nome}</h2>
+                    <p>{descricao}</p>
+                    <div className="card-actions justify-center py-2">
+                        <button className="btn btn-primary">Avaliar</button>
+                    </div>
                 </div>
-            </div>
-            <div id="slide4" className="carousel-item relative w-full">
-                <img src="/images/stock/photo-1665553365602-b2fb8e5d1707.jpg" className="w-full" />
-                <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                    <a href="#slide3" className="btn btn-circle">❮</a>
-                    <a href="#slide1" className="btn btn-circle">❯</a>
-                </div>
-            </div>
-        </div>
+            </div></SwiperSlide>
+        </Swiper>
+        </>
     )
 }
