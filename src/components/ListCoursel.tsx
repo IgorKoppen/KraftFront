@@ -1,3 +1,4 @@
+"use client"
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import Logo from "../../public/LogoKraftv2 1.svg";
@@ -9,12 +10,18 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
 import Image from "next/image";
+import {useEffect} from "react";
 interface lista {
     titulo: string,
     nome: string,
-    descricao: string
+    descricao: string,
+    data: object
 }
-export default function ListCoursel({titulo,nome,descricao} : lista){
+export default function ListCoursel({titulo,nome,descricao, data} : lista){
+
+
+
+
     return(
         <>
             <h2 className="text-white px-32 py-10 text-4xl">{titulo}</h2>

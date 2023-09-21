@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Logo from "../../public/LogoKraftv2 1.svg";
 import profilePic from "../../public/user-interface1.png";
-
+import Link from 'next/link'
 export default function Navbar(){
     return(
         <nav className="navbar bg-MainColor ">
@@ -14,13 +14,10 @@ export default function Navbar(){
                 </div>
                 <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                        <div className="w-10 rounded-full">
-                            <Image src={profilePic} alt={"test"} width={60} height={60}/>
+                        <div className="w-10 rounded-full hover:bg-blue-500">
+                            <Link href="/signin"><Image src={profilePic} alt={"test"} width={60} height={60}/></Link>
                         </div>
                     </label>
-                    <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                        <li><a>Logout</a></li>
-                    </ul>
                 </div>
             </div>
         </nav>
