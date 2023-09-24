@@ -1,12 +1,43 @@
+"use client"
 import Image from 'next/image'
 import Logo from '../../../public/LogoKraftv2 1.svg'
-import profilePic from "../../../public/user-interface1.png";
 import Link from "next/link";
+import {z} from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from "react-hook-form";
+import {useState} from "react";
+import axios from "axios";
 
-export default function Home() {
+const RegistrerUserSchema = z.object({
+    primeroNome: z.string().nonempty("O primeiro nome não pode estar vazio").max(20, "No maximo 20 letras"),
+    ultimoNome: z.string().nonempty("O ultimo nome não pode estar vazio").min(4, "No minimo 4 letras").max(20, "No maximo 20 letras"),
+    senha: z.string().nonempty("Senha não pode estar vazio"),
+    userName: z.string().nonempty("O nome não pode estar vazio").min(4, "No minimo 4 letras").max(20, "No maximo 20 letras"),
+    emailCliente: z.string().email().nonempty("O nome não pode estar vazio"),
+    senhaConfirm: z.string().nonempty("O nome não pode estar vazio")
+}).refine((data) => data.senha === data.senhaConfirm,{
+    message: "Senhas não coicidem!",
+    path: ["senhaConfirm"]
+});
+type RegistrerUserSchema = z.infer<typeof RegistrerUserSchema>
+
+export default function Registration() {
+    const [sucesso,setSucesso] = useState(false);
+    const {register, handleSubmit, formState: {errors}} = useForm<RegistrerUserSchema>({resolver: zodResolver(RegistrerUserSchema)});
+
+    function registrarUsuario(data:RegistrerUserSchema){
+        axios.post("http://localhost:8080/clientes", data)
+            .then(function (response) {
+                setSucesso(true)
+                console.log(response);
+            }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+
     return (
         <>
-
             <div className="h-screen md:flex">
                 <div
                     className="relative overflow-hidden md:flex w-1/2 bg-gradient-to-tr bg-MainColor to-purple-700 i justify-around items-center hidden" style={{backgroundImage: "url(/BackGround.jpg)",  backgroundSize: "cover"}}>
@@ -25,6 +56,7 @@ export default function Home() {
                     <form className="bg-white">
                         <h1 className="text-gray-800 font-bold text-2xl mb-1">Bem vindo!</h1>
                         <p className="text-sm font-normal text-gray-600 mb-7">Criar conta</p>
+                        {errors.primeroNome && <span className="text-red-700 border-rose-500">{errors.primeroNome.message}</span>}
                         <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
                                  fill="currentColor">
@@ -33,6 +65,7 @@ export default function Home() {
                             </svg>
                             <input className="pl-2 outline-none border-none" type="text" name="" id="" placeholder="Primeiro nome" />
                         </div>
+                        {errors.ultimoNome && <span className="text-red-700">{errors.ultimoNome.message}</span>}
                         <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
                                  fill="currentColor">
@@ -41,6 +74,7 @@ export default function Home() {
                             </svg>
                             <input className="pl-2 outline-none border-none" type="text" name="" id="" placeholder="Ultimo nome" />
                         </div>
+                        {errors.userName && <span className="text-red-700">{errors.userName.message}</span>}
                         <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor">
@@ -49,6 +83,7 @@ export default function Home() {
                             </svg>
                             <input className="pl-2 outline-none border-none" type="text" name="" id="" placeholder="Usuário" />
                         </div>
+                        {errors.emailCliente && <span className="text-red-700">{errors.emailCliente.message}</span>}
                         <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor">
@@ -57,6 +92,7 @@ export default function Home() {
                             </svg>
                             <input className="pl-2 outline-none border-none" type="text" name="" id="" placeholder="Email" />
                         </div>
+                        {errors.senha && <span className="text-red-700">{errors.senha.message}</span>}
                         <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
                                  fill="currentColor">
@@ -81,6 +117,7 @@ export default function Home() {
                             </div>
                             <label htmlFor="remember" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" className="text-blue-600 hover:underline dark:text-blue-500" >terms and conditions</a>.</label>
                         </div>
+                        {sucesso ? <span className="text-green-600 ">Sucesso!!!</span> : null}
                         <button type="submit" className="block w-full bg-indigo-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2 hover:bg-indigo-500">Registrar</button>
 
                         <Link href="/signin"><span className="text-sm ml-2 hover:text-blue-500 cursor-pointer">Já possui uma conta ?</span></Link>

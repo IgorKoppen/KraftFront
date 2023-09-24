@@ -4,6 +4,7 @@ import govenaca from "../../public/govenaça.png"
 import social from "../../public/social.png"
 import Logo from "../../public/LogoKraftv2 1.svg"
 import React from "react";
+import Link from "next/link";
 
 export default function Banner(){
     return(
@@ -18,9 +19,7 @@ export default function Banner(){
                             <h2 className="text-3xl md:text-5xl leading-relaxed md:leading-snug mb-2 text-yellow-400 ">G</h2>
                         </div>
                         <p className="textarea-md md:text-base text-gray-50 mb-4">Sua opinião importa! 📣 Ajude-nos a melhorar nossos produtos, marcas e práticas ESG. Compartilhe suas sugestões e juntos podemos construir um futuro melhor.</p>
-                        <a href="#"
-                           className="bg-transparent hover:bg-MainColor text-white hover:text-black rounded shadow hover:shadow-lg py-4 px-4 border border-MainColor hover:border-transparent">
-                           Ajude-nos a melhorar nosso ESG</a>
+                        <Link className="bg-transparent hover:bg-MainColor text-white hover:text-white rounded shadow hover:shadow-lg py-4 px-4 border border-MainColor hover:border-transparent" href="/sugestao">Ajude-nos a melhorar nosso ESG</Link>
                     </div>
                     <div className="p-8 mt-12 mb-6 md:mb-0 md:mt-0 ml-0 md:ml-12 lg:w-2/3 w-full   justify-center">
                         <div className="h-48 grid grid-cols-3 gap-4 content-center ">
