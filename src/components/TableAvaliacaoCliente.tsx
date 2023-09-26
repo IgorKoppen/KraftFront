@@ -15,51 +15,45 @@ import { Delete, Edit } from '@mui/icons-material';
 import axios from "axios";
 
 
-export type Tags = {
-    codTag: number;
-    nomeTag: string;
-    avaliacaoFuncionario: [];
-    avaliacaoCliente: [];
+
+
+type AvaliacaoCliente = {
+    codAvaliacoesCliente: number,
+    mensagem: string,
+    dataAvalicao: any,
+    tagsCliente: [],
+    produtos: any,
+    marcas: any;
 };
 
-const TableTags = () => {
-    const [tableData, setTableData] = useState<Tags[]>([]);
+const TableAvaliacaoCliente = () => {
+    const [tableData, setTableData] = useState<AvaliacaoCliente[]>([]);
     const [validationErrors, setValidationErrors] = useState<{
         [cellId: string]: string;
     }>({});
 
     useEffect(() => {
-        axios.get("http://localhost:8080/tags").then(function (response) {
+        axios.get("http://localhost:8080/avaliacaoclientes").then(function (response) {
+
             setTableData(response.data);
         })
     }, []);
 
 
-    const handleSaveRowEdits: MaterialReactTableProps<Tags>['onEditingRowSave'] =
-        async ({ exitEditingMode, row, values}) => {
-            if (!Object.keys(validationErrors).length) {
-                axios.put("http://localhost:8080/tags", values).then(function (response) {
-                    setTableData(response.data);
-                })
-                //send/receive api updates here, then refetch or update local table data for re-render
-                setTableData([...tableData]);
-                exitEditingMode(); //required to exit editing mode and close modal
-            }
-        };
 
     const handleCancelRowEdits = () => {
         setValidationErrors({});
     };
 
     const handleDeleteRow = useCallback(
-        (row: MRT_Row<Tags>) => {
+        (row: MRT_Row<AvaliacaoCliente>) => {
             if (
-                !confirm(`Você ter certeza que deseja deletar? ${row.getValue('nomeTag')}`)
+                !confirm(`Você ter certeza que deseja deletar? ${row.getValue('nome')}`)
             ) {
                 return;
             }
             //send api delete request here, then refetch or update local table data for re-render
-            axios.delete(`http://localhost:8080/tags/${row.id}`).then(function (response) {
+            axios.delete(`http://localhost:8080/avaliacaoclientes/${row.id}`).then(function (response) {
                 setTableData(response.data);
             })
             tableData.splice(row.index, 1);
@@ -70,13 +64,13 @@ const TableTags = () => {
 
     const getCommonEditTextFieldProps = useCallback(
         (
-            cell: MRT_Cell<Tags>,
-        ): MRT_ColumnDef<Tags>['muiTableBodyCellEditTextFieldProps'] => {
+            cell: MRT_Cell<AvaliacaoCliente>,
+        ): MRT_ColumnDef<AvaliacaoCliente>['muiTableBodyCellEditTextFieldProps'] => {
             return {
                 error: !!validationErrors[cell.id],
                 helperText: validationErrors[cell.id],
                 onBlur: (event) => {
-                    const isValid = cell.column.id === "nomeTag" ?  validateRequired(event.target.value) : null;
+                    const isValid = cell.column.id === "nome" ?  validateRequired(event.target.value) : null;
                     if (!isValid) {
                         //set validation error for cell if invalid
                         setValidationErrors({
@@ -96,10 +90,10 @@ const TableTags = () => {
         [validationErrors],
     );
 
-    const columns = useMemo<MRT_ColumnDef<Tags>[]>(
+    const columns = useMemo<MRT_ColumnDef<AvaliacaoCliente>[]>(
         () => [
             {
-                accessorKey: 'codTag',
+                accessorKey: 'codAvaliacoesCliente',
                 header: 'ID',
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
@@ -108,14 +102,39 @@ const TableTags = () => {
 
             },
             {
-                accessorKey: 'nomeTag',
-                header: 'Nome da tag',
+                accessorKey: 'mensagem',
+                header: 'Mensagem',
+                enableColumnOrdering: false,
+                enableEditing: false, //disable editing on this column
+                enableSorting: false,
+                size: 250,
+
+            },
+            {
+                accessorKey: 'dataAvalicao',
+                header: 'Data da avaliação',
+                enableColumnOrdering: false,
+                enableEditing: false, //disable editing on this column
+                enableSorting: false,
+                size: 12,
+
+            },
+            {
+                accessorKey: 'produtos.nome',
+                header: 'Produto',
+                enableColumnOrdering: false,
+                enableEditing: false, //disable editing on this column
+                enableSorting: false,
+                size: 25,
+            },
+            {
+                accessorKey: 'marcas.nome',
+                header: 'Marca',
+                enableColumnOrdering: false,
+                enableEditing: false, //disable editing on this column
+                enableSorting: false,
                 size: 25,
 
-                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-                    ...getCommonEditTextFieldProps(cell),
-                    type: "text"
-                }),
             },
         ],
         [getCommonEditTextFieldProps],
@@ -138,16 +157,10 @@ const TableTags = () => {
                 editingMode="modal" //default
                 enableColumnOrdering
                 enableEditing
-                onEditingRowSave={handleSaveRowEdits}
                 onEditingRowCancel={handleCancelRowEdits}
 
                 renderRowActions={({ row, table }) => (
                     <Box sx={{ display: 'flex', gap: '1rem' }}  >
-                        <Tooltip arrow placement="left" title="Editar">
-                            <IconButton  onClick={() => table.setEditingRow(row)}>
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
                         <Tooltip arrow placement="right" title="Deletar">
                             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                 <Delete />
@@ -161,13 +174,13 @@ const TableTags = () => {
 };
 
 interface CreateModalProps {
-    columns: MRT_ColumnDef<Tags>[];
+    columns: MRT_ColumnDef<AvaliacaoCliente>[];
     onClose: () => void;
-    onSubmit: (values: Tags) => void;
+    onSubmit: (values: AvaliacaoCliente) => void;
     open: boolean;
 }
 
 //example of creating a mui dialog modal for creating new rows
 
 const validateRequired = (value: string) => !!value.length && value.length < 26;
-export default TableTags;
+export default TableAvaliacaoCliente;

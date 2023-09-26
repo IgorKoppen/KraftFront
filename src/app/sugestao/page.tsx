@@ -54,8 +54,8 @@ export default function Sugestao() {
                                             <div className="mb-4 w-full flex justify-center">
                                                 <div className="w-4/5">
                                                     <p className="mb-4 text-white">Sugestão</p>
-                                                    <textarea maxLength={200}  name="postContent" rows={2} cols={4} placeholder="Digite aqui" className="input input-bordered input-lg w-full   h-52   align-text-top resize-none" {...register('sugestao.mensagem')}/>
-                                                    {errors.sugestao?.nome && <span className="text-red-700 border-rose-500">{errors.sugestao.mensagem.message}</span>}
+                                                    <textarea maxLength={200}  rows={2} cols={4} placeholder="Digite aqui" className="input input-bordered input-lg w-full   h-52   align-text-top resize-none" {...register('sugestao.mensagem')}/>
+                                                    {errors.sugestao?.message && <span className="text-red-700 border-rose-500">{errors.sugestao.message}</span>}
                                                     <button
                                                         className="my-4 bg-indigo-600 mb-3 inline-block  w-full rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_rgba(0,0,0,0.2)] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)] focus:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)] focus:outline-none focus:ring-0 active:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)]"
                                                         type="submit"

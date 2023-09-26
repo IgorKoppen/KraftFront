@@ -15,30 +15,36 @@ import { Delete, Edit } from '@mui/icons-material';
 import axios from "axios";
 
 
-export type Tags = {
-    codTag: number;
-    nomeTag: string;
-    avaliacaoFuncionario: [];
-    avaliacaoCliente: [];
+export type AvaliacaoFuncionario = {
+    codAvalicaoFuncionario: number,
+    mensagem: string,
+    usuarioPostagem: string,
+    tagsFuncionarios: [],
+    funcionarios: {},
+    produtos: {},
+    marcas: {},
 };
 
-const TableTags = () => {
-    const [tableData, setTableData] = useState<Tags[]>([]);
+const TableAvaliacaoFuncionario= () => {
+    const [tableData, setTableData] = useState<AvaliacaoFuncionario[]>([]);
     const [validationErrors, setValidationErrors] = useState<{
         [cellId: string]: string;
     }>({});
 
     useEffect(() => {
-        axios.get("http://localhost:8080/tags").then(function (response) {
+
+        axios.get("http://localhost:8080/avaliacaofuncionarios").then(function (response) {
+            console.log(response.data)
+
             setTableData(response.data);
         })
     }, []);
 
 
-    const handleSaveRowEdits: MaterialReactTableProps<Tags>['onEditingRowSave'] =
+    const handleSaveRowEdits: MaterialReactTableProps<AvaliacaoFuncionario>['onEditingRowSave'] =
         async ({ exitEditingMode, row, values}) => {
             if (!Object.keys(validationErrors).length) {
-                axios.put("http://localhost:8080/tags", values).then(function (response) {
+                axios.put("http://localhost:8080/avaliacaoFuncionarios", values).then(function (response) {
                     setTableData(response.data);
                 })
                 //send/receive api updates here, then refetch or update local table data for re-render
@@ -52,14 +58,14 @@ const TableTags = () => {
     };
 
     const handleDeleteRow = useCallback(
-        (row: MRT_Row<Tags>) => {
+        (row: MRT_Row<AvaliacaoFuncionario>) => {
             if (
-                !confirm(`Você ter certeza que deseja deletar? ${row.getValue('nomeTag')}`)
+                !confirm(`Você ter certeza que deseja deletar? ${row.getValue('mensagem')}`)
             ) {
                 return;
             }
             //send api delete request here, then refetch or update local table data for re-render
-            axios.delete(`http://localhost:8080/tags/${row.id}`).then(function (response) {
+            axios.delete(`http://localhost:8080/avaliacaoFuncionarios/${row.id}`).then(function (response) {
                 setTableData(response.data);
             })
             tableData.splice(row.index, 1);
@@ -70,13 +76,13 @@ const TableTags = () => {
 
     const getCommonEditTextFieldProps = useCallback(
         (
-            cell: MRT_Cell<Tags>,
-        ): MRT_ColumnDef<Tags>['muiTableBodyCellEditTextFieldProps'] => {
+            cell: MRT_Cell<AvaliacaoFuncionario>,
+        ): MRT_ColumnDef<AvaliacaoFuncionario>['muiTableBodyCellEditTextFieldProps'] => {
             return {
                 error: !!validationErrors[cell.id],
                 helperText: validationErrors[cell.id],
                 onBlur: (event) => {
-                    const isValid = cell.column.id === "nomeTag" ?  validateRequired(event.target.value) : null;
+                    const isValid = cell.column.id === "mensagem" ?  validateRequired(event.target.value) : null;
                     if (!isValid) {
                         //set validation error for cell if invalid
                         setValidationErrors({
@@ -96,10 +102,10 @@ const TableTags = () => {
         [validationErrors],
     );
 
-    const columns = useMemo<MRT_ColumnDef<Tags>[]>(
+    const columns = useMemo<MRT_ColumnDef<AvaliacaoFuncionario>[]>(
         () => [
             {
-                accessorKey: 'codTag',
+                accessorKey: 'codAvalicaoFuncionario',
                 header: 'ID',
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
@@ -108,8 +114,38 @@ const TableTags = () => {
 
             },
             {
-                accessorKey: 'nomeTag',
-                header: 'Nome da tag',
+                accessorKey: 'mensagem',
+                header: 'Mensagem',
+                size: 250,
+
+                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+                    ...getCommonEditTextFieldProps(cell),
+                    type: "text"
+                }),
+            },
+            {
+                accessorKey: 'usuarioPostagem',
+                header: 'Usuario da postagem',
+                size: 25,
+
+                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+                    ...getCommonEditTextFieldProps(cell),
+                    type: "text"
+                }),
+            },
+            {
+                accessorKey: 'produtos.nome',
+                header: 'Produto',
+                size: 25,
+
+                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+                    ...getCommonEditTextFieldProps(cell),
+                    type: "text"
+                }),
+            },
+            {
+                accessorKey: 'marcas.nome',
+                header: 'marca',
                 size: 25,
 
                 muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -161,13 +197,13 @@ const TableTags = () => {
 };
 
 interface CreateModalProps {
-    columns: MRT_ColumnDef<Tags>[];
+    columns: MRT_ColumnDef<AvaliacaoFuncionario>[];
     onClose: () => void;
-    onSubmit: (values: Tags) => void;
+    onSubmit: (values: AvaliacaoFuncionario) => void;
     open: boolean;
 }
 
 //example of creating a mui dialog modal for creating new rows
 
 const validateRequired = (value: string) => !!value.length && value.length < 26;
-export default TableTags;
+export default TableAvaliacaoFuncionario;

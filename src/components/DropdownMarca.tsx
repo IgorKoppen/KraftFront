@@ -2,6 +2,7 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import { Controller } from 'react-hook-form';
+import {z} from "zod";
 
 interface marca{
     codMarca: number,
@@ -13,7 +14,9 @@ interface marca{
     produtos: [] | null
 }
 
-
+const AvaliaçãoProdutoSchema = z.object({
+    message: z.string(),
+})
 
 export default function DropdownMarca({ control, name }:any) {
     const [Marcas, setMarcas] = useState<marca[]>([]);

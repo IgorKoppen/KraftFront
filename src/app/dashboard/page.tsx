@@ -2,8 +2,8 @@
 import GraficoDeBarra from "@/components/GraficoDeBarra";
 import GraficoDePizza from "@/components/GraficoDePizza";
 
+export default function Dashboard(){
 
-export default function dashboard(){
     return(
 <div className="w-full h-screen col-start-2 col-span-12 lg:col-start-3">
     <div className="grid grid-cols-1 grid-rows-6 w-full h-full ">
@@ -16,3 +16,4 @@ export default function dashboard(){
 </div>
     )
 }
+

@@ -51,9 +51,7 @@ export default function AdicionarProduto(){
             console.log(error);
         });
     }
-    const handleMarcaSelect = (value: any) => {
-        console.log(value)
-    }
+
 
     return(
         <>

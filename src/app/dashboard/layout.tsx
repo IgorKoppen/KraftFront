@@ -1,20 +1,36 @@
+"use client"
 import Image from "next/image";
 import Logo from "../../../public/LogoKraftv2 1.svg";
-import React from "react";
+import React, {useEffect} from "react";
 import Link from "next/link";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import SearchIcon from '@mui/icons-material/Search';
 import PostAddIcon from '@mui/icons-material/PostAdd';
+import {useSession} from "next-auth/react";
+import {useRouter} from "next/navigation";
+import TableViewIcon from '@mui/icons-material/TableView';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ElderlyWomanTwoToneIcon from '@mui/icons-material/ElderlyWomanTwoTone';
 
-export default  function layout({
+export default  function Layout({
     children,
 }: {
     children: React.ReactNode
 }){
+    // const { data: session, status } = useSession()
+    // const router = useRouter()
+    //
+    // useEffect(() => {
+    //     if (status === 'unauthenticated') {
+    //         router.push('/signin') // replace '/login' with your login page route
+    //     }
+    // }, [status, router])
+    //
+    // if (status === 'loading' || status === 'unauthenticated') {
+    //     return null
+    // }
     return(
         <>
-            <main className="h-full w-full grid grid-cols-12 grid-rows-7 bg-white">
+            <main className="h-full w-full grid grid-cols-12 grid-rows-7  bg-white">
                 <aside id="logo-sidebar" className="bg-MainColor top-0 left-0 z-40 h-full min-h-screen pt-4 transition-transform  border-r border-gray-200 translate-x-0 dark:bg-gray-800 dark:border-gray-700 col-start-1 col-span-1 w-full lg:col-span-2" aria-label="Sidebar">
                     <Image className="text-3xl py-4 md:text-5xl" src={Logo} alt={"Logo"} width={325} height={82} draggable={false}/>
                     <div className="px-3 pb-4 overflow-y-auto bg-MainColor dark:bg-gray-800 lg:flex">
@@ -58,6 +74,11 @@ export default  function layout({
                                     <SearchIcon></SearchIcon>
                                     <span className="ml-3 lg:block hidden">Procurar</span>
                                 </Link>
+                            </li>
+                            <li>
+                                <div className="start">
+                                    <Link href="/" className="flex text-white  items-center p-2  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group hover:text-black"><ElderlyWomanTwoToneIcon></ElderlyWomanTwoToneIcon><span className="ml-3 lg:block hidden">Voltar </span></Link>
+                                </div>
                             </li>
                         </ul>
                     </div>
