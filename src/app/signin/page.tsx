@@ -74,7 +74,6 @@ export default function Singin() {
                                 />
                             </div>
                         </div>
-
                         <div>
                             <button
                                 type="submit"

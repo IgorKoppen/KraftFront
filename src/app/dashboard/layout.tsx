@@ -70,10 +70,19 @@ export default  function Layout({
                                 </details>
                             </li>
                             <li>
-                                <Link href={"/dashboard/procurar"} className="flex text-white  items-center p-2  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group hover:text-black">
-                                    <SearchIcon></SearchIcon>
-                                    <span className="ml-3 lg:block hidden">Procurar</span>
-                                </Link>
+                                <details>
+                                    <summary className="flex text-white  items-center p-2  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group hover:text-black">
+                                        <TableViewIcon></TableViewIcon>
+                                        <span className="ml-3 lg:block hidden">Tabelas</span>
+                                    </summary>
+                                    <ul className="p-4 m- bg-base-100 rounded-lg mt-2">
+                                        <li className="py-1 rounded-md hover:bg-gray-400"><Link href={"/dashboard/procurar/tags"} className="flex  items-center p-2  rounded-lg dark:text-white  dark:hover:bg-gray-700 group hover:text-white">Tags</Link></li>
+                                        <li className="py-1 rounded-md hover:bg-gray-400"><Link href={"/dashboard/procurar/produtos"} className="flex  items-center p-2  rounded-lg dark:text-white  dark:hover:bg-gray-700 group hover:text-white">Produtos</Link></li>
+                                        <li className="py-1 rounded-md hover:bg-gray-400"><Link href={"/dashboard/procurar/marcas"} className="flex  items-center p-2  rounded-lg dark:text-white  dark:hover:bg-gray-700 group hover:text-white">Marcas</Link></li>
+                                        <li className="py-1 rounded-md hover:bg-gray-400"><Link href={"/dashboard/procurar/avaliacaoCliente"} className="flex  items-center p-2  rounded-lg dark:text-white  dark:hover:bg-gray-700 group hover:text-white">Avaliacao cliente</Link></li>
+                                        <li className="py-1 rounded-md hover:bg-gray-400"><Link href={"/dashboard/procurar/avaliacaoFuncionario"} className="flex  items-center p-2  rounded-lg dark:text-white  dark:hover:bg-gray-700 group hover:text-white">Avaliacao funcionario</Link></li>
+                                    </ul>
+                                </details>
                             </li>
                             <li>
                                 <div className="start">
