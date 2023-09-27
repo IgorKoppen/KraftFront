@@ -26,6 +26,7 @@ type AvaliacaoCliente = {
         codAvaliacoesCliente: number,
         mensagem: string,
         dataAvalicao: any,
+        nota: number,
         tagsCliente: [{
             codTag: number,
             nomeTag: String}],
@@ -129,7 +130,16 @@ const TableAvaliacaoCliente = () => {
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
                 enableSorting: false,
-                size: 12,
+                size: 125,
+
+            },
+            {
+                accessorKey: 'AvaliacaoCliente.nota',
+                header: 'Nota',
+                enableColumnOrdering: false,
+                enableEditing: false, //disable editing on this column
+                enableSorting: false,
+                size: 125,
 
             },
             {
@@ -138,7 +148,7 @@ const TableAvaliacaoCliente = () => {
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
                 enableSorting: false,
-                size: 25,
+                size: 125,
             },
             {
                 accessorKey: 'NomeMarca',
@@ -146,14 +156,15 @@ const TableAvaliacaoCliente = () => {
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
                 enableSorting: false,
-                size: 25,
+                size: 125,
 
             },
+
             {
                 accessorFn: (row) => row.AvaliacaoCliente && row.AvaliacaoCliente.tagsCliente ? row.AvaliacaoCliente.tagsCliente.map(tag => tag.nomeTag).join(', ') : '',
                 id: 'AvaliacaoCliente.',
                 header: 'Tags',
-                size: 25,
+                size: 125,
                 enableEditing: false,
             },
         ],
