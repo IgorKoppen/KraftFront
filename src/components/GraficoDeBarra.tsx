@@ -3,7 +3,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Resp
 
 const data = [
     {
-        name: 'Page A',
+        name: 'Kraft',
         uv: 4000,
         pv: 2400,
         amt: 2400,
@@ -68,6 +68,8 @@ export default class GraficoDeBarra extends PureComponent {
                     <YAxis />
                     <Tooltip />
                     <Legend />
+                    <Bar dataKey="pv" fill="#8884d8" />
+                    <Bar dataKey="uv" fill="#82ca9d" />
                     <Bar dataKey="pv" fill="#8884d8" />
                     <Bar dataKey="uv" fill="#82ca9d" />
                 </BarChart>

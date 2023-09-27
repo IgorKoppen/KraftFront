@@ -13,17 +13,22 @@ import {
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import axios from "axios";
+import {tag} from "postcss-selector-parser";
 
 
-export type AvaliacaoFuncionario = {
-    codAvalicaoFuncionario: number,
-    mensagem: string,
-    usuarioPostagem: string,
-    tagsFuncionarios: [],
-    funcionarios: {},
-    produtos: {},
-    marcas: {},
-};
+type AvaliacaoFuncionario = {
+    "NomeMarca": string,
+    "NomeProduto": string,
+    "avaliacaoFuncionario":{
+        codAvalicaoFuncionario: number,
+        mensagem: string,
+        usuarioPostagem: string,
+        tagsFuncionarios: [{
+         codTag: number,
+         nomeTag: String
+}] | [],
+},
+    }
 
 const TableAvaliacaoFuncionario= () => {
     const [tableData, setTableData] = useState<AvaliacaoFuncionario[]>([]);
@@ -33,9 +38,7 @@ const TableAvaliacaoFuncionario= () => {
 
     useEffect(() => {
 
-        axios.get("http://localhost:8080/avaliacaofuncionarios").then(function (response) {
-            console.log(response.data)
-
+        axios.get("http://localhost:8080/avaliacaofuncionarios/getMarcaProduto").then(function (response) {
             setTableData(response.data);
         })
     }, []);
@@ -60,13 +63,13 @@ const TableAvaliacaoFuncionario= () => {
     const handleDeleteRow = useCallback(
         (row: MRT_Row<AvaliacaoFuncionario>) => {
             if (
-                !confirm(`Você ter certeza que deseja deletar? ${row.getValue('mensagem')}`)
+                !confirm(`Você ter certeza que deseja deletar? Avaliação do usuario ${row.getValue('avaliacaoFuncionario.usuarioPostagem')}`)
             ) {
                 return;
             }
             //send api delete request here, then refetch or update local table data for re-render
-            axios.delete(`http://localhost:8080/avaliacaoFuncionarios/${row.id}`).then(function (response) {
-                setTableData(response.data);
+            axios.delete(`http://localhost:8080/avaliacaofuncionarios/${row.getValue('avaliacaoFuncionario.codAvalicaoFuncionario')}`).then(function (response) {
+
             })
             tableData.splice(row.index, 1);
             setTableData([...tableData]);
@@ -105,7 +108,7 @@ const TableAvaliacaoFuncionario= () => {
     const columns = useMemo<MRT_ColumnDef<AvaliacaoFuncionario>[]>(
         () => [
             {
-                accessorKey: 'codAvalicaoFuncionario',
+                accessorKey: 'avaliacaoFuncionario.codAvalicaoFuncionario',
                 header: 'ID',
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
@@ -114,7 +117,7 @@ const TableAvaliacaoFuncionario= () => {
 
             },
             {
-                accessorKey: 'mensagem',
+                accessorKey: 'avaliacaoFuncionario.mensagem',
                 header: 'Mensagem',
                 size: 250,
 
@@ -124,7 +127,7 @@ const TableAvaliacaoFuncionario= () => {
                 }),
             },
             {
-                accessorKey: 'usuarioPostagem',
+                accessorKey: 'avaliacaoFuncionario.usuarioPostagem',
                 header: 'Usuario da postagem',
                 size: 25,
 
@@ -134,24 +137,23 @@ const TableAvaliacaoFuncionario= () => {
                 }),
             },
             {
-                accessorKey: 'produtos.nome',
+                accessorKey: 'NomeProduto',
                 header: 'Produto',
                 size: 25,
-
-                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-                    ...getCommonEditTextFieldProps(cell),
-                    type: "text"
-                }),
+                enableEditing: false,
             },
             {
-                accessorKey: 'marcas.nome',
+                accessorKey: 'NomeMarca',
                 header: 'marca',
                 size: 25,
-
-                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-                    ...getCommonEditTextFieldProps(cell),
-                    type: "text"
-                }),
+                enableEditing: false,
+            },
+            {
+                accessorFn: (row) => row.avaliacaoFuncionario && row.avaliacaoFuncionario.tagsFuncionarios ? row.avaliacaoFuncionario.tagsFuncionarios.map(tag => tag.nomeTag).join(', ') : '',
+                id: 'avaliacaoFuncionario.tagsFuncionario.codTag',
+                header: 'Tags',
+                size: 25,
+                enableEditing: false,
             },
         ],
         [getCommonEditTextFieldProps],
@@ -179,11 +181,6 @@ const TableAvaliacaoFuncionario= () => {
 
                 renderRowActions={({ row, table }) => (
                     <Box sx={{ display: 'flex', gap: '1rem' }}  >
-                        <Tooltip arrow placement="left" title="Editar">
-                            <IconButton  onClick={() => table.setEditingRow(row)}>
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
                         <Tooltip arrow placement="right" title="Deletar">
                             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                 <Delete />

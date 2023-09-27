@@ -13,7 +13,7 @@ const RegistrerMarcaSchema = z.object({
         nome: z.string().nonempty("Não pode estar vazio!"),
         funcionario: z.object({
             codFuncionario: z.number().int().positive()
-        }).default({codFuncionario: 1})
+        }).default({codFuncionario: 2})
     }
 ),
     file: z.any().refine((files) => files?.length == 1, "É necessario ter uma imagen")

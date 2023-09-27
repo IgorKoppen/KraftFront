@@ -18,12 +18,18 @@ import axios from "axios";
 
 
 type AvaliacaoCliente = {
-    codAvaliacoesCliente: number,
-    mensagem: string,
-    dataAvalicao: any,
-    tagsCliente: [],
-    produtos: any,
-    marcas: any;
+    PrimeiroNomeCliente: string,
+    NomeMarca: string,
+    NomeProduto: string,
+    UltimoNomeCliente: string,
+    AvaliacaoCliente: {
+        codAvaliacoesCliente: number,
+        mensagem: string,
+        dataAvalicao: any,
+        tagsCliente: [{
+            codTag: number,
+            nomeTag: String}],
+    }
 };
 
 const TableAvaliacaoCliente = () => {
@@ -33,8 +39,7 @@ const TableAvaliacaoCliente = () => {
     }>({});
 
     useEffect(() => {
-        axios.get("http://localhost:8080/avaliacaoclientes").then(function (response) {
-
+        axios.get("http://localhost:8080/avaliacaoclientes/getMarcaProduto").then(function (response) {
             setTableData(response.data);
         })
     }, []);
@@ -48,12 +53,12 @@ const TableAvaliacaoCliente = () => {
     const handleDeleteRow = useCallback(
         (row: MRT_Row<AvaliacaoCliente>) => {
             if (
-                !confirm(`Você ter certeza que deseja deletar? ${row.getValue('nome')}`)
+                !confirm(`Você ter certeza que deseja deletar? Avaliação do usuario ${row.getValue('AvaliacaoCliente.codAvaliacoesCliente')}`)
             ) {
                 return;
             }
             //send api delete request here, then refetch or update local table data for re-render
-            axios.delete(`http://localhost:8080/avaliacaoclientes/${row.id}`).then(function (response) {
+            axios.delete(`http://localhost:8080/avaliacaoclientes/${row.getValue('AvaliacaoCliente.codAvaliacoesCliente')}`).then(function (response) {
                 setTableData(response.data);
             })
             tableData.splice(row.index, 1);
@@ -93,7 +98,7 @@ const TableAvaliacaoCliente = () => {
     const columns = useMemo<MRT_ColumnDef<AvaliacaoCliente>[]>(
         () => [
             {
-                accessorKey: 'codAvaliacoesCliente',
+                accessorKey: 'AvaliacaoCliente.codAvaliacoesCliente',
                 header: 'ID',
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
@@ -102,7 +107,15 @@ const TableAvaliacaoCliente = () => {
 
             },
             {
-                accessorKey: 'mensagem',
+                accessorFn: (row) => `${row.PrimeiroNomeCliente} ${row.UltimoNomeCliente}`,
+                header: 'Cliente',
+                enableColumnOrdering: false,
+                enableEditing: false, //disable editing on this column
+                enableSorting: false,
+                size: 250,
+            },
+            {
+                accessorKey: 'AvaliacaoCliente.mensagem',
                 header: 'Mensagem',
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
@@ -111,7 +124,7 @@ const TableAvaliacaoCliente = () => {
 
             },
             {
-                accessorKey: 'dataAvalicao',
+                accessorKey: 'AvaliacaoCliente.dataAvalicao',
                 header: 'Data da avaliação',
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
@@ -120,7 +133,7 @@ const TableAvaliacaoCliente = () => {
 
             },
             {
-                accessorKey: 'produtos.nome',
+                accessorKey: 'NomeProduto',
                 header: 'Produto',
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
@@ -128,13 +141,20 @@ const TableAvaliacaoCliente = () => {
                 size: 25,
             },
             {
-                accessorKey: 'marcas.nome',
+                accessorKey: 'NomeMarca',
                 header: 'Marca',
                 enableColumnOrdering: false,
                 enableEditing: false, //disable editing on this column
                 enableSorting: false,
                 size: 25,
 
+            },
+            {
+                accessorFn: (row) => row.AvaliacaoCliente && row.AvaliacaoCliente.tagsCliente ? row.AvaliacaoCliente.tagsCliente.map(tag => tag.nomeTag).join(', ') : '',
+                id: 'AvaliacaoCliente.',
+                header: 'Tags',
+                size: 25,
+                enableEditing: false,
             },
         ],
         [getCommonEditTextFieldProps],
