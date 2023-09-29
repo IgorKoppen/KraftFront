@@ -4,6 +4,7 @@ import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import axios from "axios";
+import {getCookie} from "typescript-cookie";
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
@@ -12,8 +13,8 @@ const RegistrerMarcaSchema = z.object({
     marca: z.object({
         nome: z.string().nonempty("Não pode estar vazio!"),
         funcionario: z.object({
-            codFuncionario: z.number().int().positive()
-        }).default({codFuncionario: 2})
+            codFuncionario: z.number().int().positive().optional()
+        }).default({})
     }
 ),
     file: z.any().refine((files) => files?.length == 1, "É necessario ter uma imagen")
@@ -33,7 +34,13 @@ export default function AdicionarMarca(){
     const {register, handleSubmit, formState: {errors}} = useForm<RegistrerMarcaSchema>({resolver: zodResolver(RegistrerMarcaSchema)});
 
     function registrarMarca(data:RegistrerMarcaSchema){
+        const codFuncion = getCookie("UserFuncCod")
         let formData = new FormData();
+        if(codFuncion != undefined) {
+            data.marca.funcionario.codFuncionario = parseInt(getCookie("UserFuncCod") as string)
+        }else {
+            return
+        }
         formData.append('marca', JSON.stringify(data.marca));
         formData.append('file', data.file[0]);
         axios.post("http://localhost:8080/marcas", formData).then(function (response) {
@@ -61,7 +68,6 @@ export default function AdicionarMarca(){
                                 <div>
                                     <label htmlFor="imagem" className="block mb-2 text-sm font-medium text-gray-900 ">Selecione uma imagem</label>
                                     <input type="file" className="file-input file-input-bordered w-full " {...register('file')}/>
-
                                 </div>
                                 <button type="submit" className="w-full text-white bg-indigo-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center  ">Enviar</button>
                             </form>

@@ -32,7 +32,6 @@ const TableProduto = () => {
 
     useEffect(() => {
         axios.get("http://localhost:8080/produto").then(function (response) {
-            console.log(response.data)
             setTableData(response.data);
         })
     }, []);

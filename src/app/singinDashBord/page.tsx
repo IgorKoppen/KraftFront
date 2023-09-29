@@ -10,15 +10,15 @@ import {setCookie } from 'typescript-cookie'
 import {useState} from "react";
 import { useRouter } from 'next/navigation'
 interface user{
-    codCliente: number,
+    codFuncionario: number,
     primeroNome: string,
     ultimoNome: string,
     senha: string,
-    userName: string,
-    emailCliente: string,
+    cargo: string,
+    emailFuncionario: string,
     dataRegistro: string,
+    cpfFuncionario: number,
     avaliacaoClientes: [],
-
 }
 
 const LogarUserSchema = z.object({
@@ -28,7 +28,7 @@ const LogarUserSchema = z.object({
 
 type LogarUserSchema = z.infer<typeof LogarUserSchema>
 
-export default function Singin() {
+export default function SinginDashBord() {
     const router = useRouter()
     const {register, handleSubmit, formState: {errors}} = useForm<LogarUserSchema>({resolver: zodResolver(LogarUserSchema)});
     const [error, setError] = useState("");
@@ -37,17 +37,16 @@ export default function Singin() {
         params.append('email', data.email);
         params.append('senha', data.senha);
 
-        axios.post("http://localhost:8080/clientes/login", params).then(function (response:any) {
+        axios.post("http://localhost:8080/funcionarios/login", params).then(function (response:any) {
             const data:user = response.data;
-            setCookie('UserCod', JSON.stringify(data.codCliente), { expires: 0.001 })
-            setCookie('UserName', JSON.stringify(data.userName), { expires: 0.001 })
-            router.replace('/', { scroll: false })
+            setCookie('UserFuncCod', JSON.stringify(data.codFuncionario), { expires: 0.001  })
+            setCookie('EmailFun', JSON.stringify(data.emailFuncionario), { expires: 0.001  })
+            setCookie('senhaFun', JSON.stringify(data.senha), { expires: 0.001  })
+            router.replace('/dashboard', { scroll: false })
         }).catch(function (error:any) {
           setError(error.response.data)
         });
     }
-
-
     return (
             <div className="flex min-h-full flex-1 flex-col  px-6 py-12 lg:px-8 bg-white">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm flex flex-col justify-center">

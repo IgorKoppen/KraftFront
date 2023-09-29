@@ -9,25 +9,35 @@ import {useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import TableViewIcon from '@mui/icons-material/TableView';
 import LogoutIcon from '@mui/icons-material/Logout';
-import ElderlyWomanTwoToneIcon from '@mui/icons-material/ElderlyWomanTwoTone';
+import axios from "axios";
+import {getCookie, removeCookie, setCookie} from "typescript-cookie";
 
 export default  function Layout({
     children,
 }: {
     children: React.ReactNode
 }){
-    // const { data: session, status } = useSession()
-    // const router = useRouter()
-    //
-    // useEffect(() => {
-    //     if (status === 'unauthenticated') {
-    //         router.push('/signin') // replace '/login' with your login page route
-    //     }
-    // }, [status, router])
-    //
-    // if (status === 'loading' || status === 'unauthenticated') {
-    //     return null
-    // }
+
+    const router = useRouter()
+
+   useEffect(() => {
+       const email = getCookie('EmailFun' as string)
+       const senha = getCookie('senhaFun'  as string)
+
+       if(email === undefined || senha === undefined){
+           return router.push('/singinDashBord');
+       }else {
+           console.log(JSON.parse(email), JSON.parse(senha))
+           const params = new URLSearchParams();
+           params.append('email', JSON.parse(email));
+           params.append('senha', JSON.parse(senha));
+
+           axios.post("http://localhost:8080/funcionarios/login", params).catch(function (error: any) {
+               router.push('/singinDashBord')
+           });
+       }
+   }, [router])
+
     return(
         <>
             <main className="h-full w-full grid grid-cols-12 grid-rows-7  bg-white">
@@ -86,7 +96,11 @@ export default  function Layout({
                             </li>
                             <li>
                                 <div className="start">
-                                    <Link href="/" className="flex text-white  items-center p-2  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group hover:text-black"><ElderlyWomanTwoToneIcon></ElderlyWomanTwoToneIcon><span className="ml-3 lg:block hidden">Voltar </span></Link>
+                                    <Link href="/" className="flex text-white  items-center p-2  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group hover:text-black" onClick={() =>{
+                                        removeCookie('senhaFun')
+                                        removeCookie('UserFuncCod')
+                                        removeCookie('EmailFun')
+                                    }}><LogoutIcon></LogoutIcon><span className="ml-3 lg:block hidden">Voltar </span></Link>
                                 </div>
                             </li>
                         </ul>

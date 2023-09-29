@@ -5,6 +5,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import axios from "axios";
 import dynamic from "next/dynamic";
+import {getCookie} from "typescript-cookie";
 
 const RegistrerSugestaoSchema = z.object({
     sugestao: z.object({
@@ -15,7 +16,7 @@ const RegistrerSugestaoSchema = z.object({
                 codTag: z.number().int().positive()
             })).default([{codTag: 14}]),
         funcionarios: z.object({
-                codFuncionario: z.number().int().positive()
+                codFuncionario: z.number().int().positive().optional()
             }).default({codFuncionario: 1}),
         marcas: z.object({
             codMarca: z.number().int().positive()
@@ -31,7 +32,12 @@ export default function CadastrarSugestao(){
     const {register, handleSubmit, formState: {errors}} = useForm<RegistrerSugestaoSchema>({resolver: zodResolver(RegistrerSugestaoSchema)});
 
     function registrarSugestao(data:RegistrerSugestaoSchema){
-        console.log(data.sugestao)
+        const codFuncion = getCookie("UserFuncCod")
+        if(codFuncion != undefined) {
+            data.sugestao.funcionarios.codFuncionario = parseInt(getCookie("UserFuncCod") as string)
+        }else {
+            return
+        }
         axios.post("http://localhost:8080/avaliacaofuncionarios", data.sugestao).then(function (response) {
             setSucesso(true);
         }).catch(function (error) {

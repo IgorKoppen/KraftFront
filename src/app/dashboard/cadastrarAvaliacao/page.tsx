@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import {useState} from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
+import {getCookie} from "typescript-cookie";
 
 const DropdownMarca = dynamic(() => import('@/components/DropdownMarca'), {
     loading: () => <select  className="bg-gray-50 m-0 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
@@ -12,7 +13,7 @@ const DropdownMarca = dynamic(() => import('@/components/DropdownMarca'), {
     </select>,
 })
 
-const DropdownTag = dynamic(() => import('@/components/DropdownTag'), {
+const DropdownTag = dynamic(() => import('@/components/DropdownTags'), {
     loading: () => <select  className="bg-gray-50 m-0 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
         <option>Loading...</option>
     </select>,
@@ -26,9 +27,9 @@ const RegistrerAvaliacaoSchema = z.object({
             tagsFuncionario:z.array(z.object({
                 codTag: z.number().int().positive()
             })).default([{codTag: 14}]),
-            funcionario: z.object({
-                codFuncionario: z.number().int().positive()
-            }).default({codFuncionario: 1}),
+        funcionarios: z.object({
+                codFuncionario: z.number().int().positive().optional()
+            }).default({}),
             produtos:z.object({
                 codProduto: z.number().int().positive()
             }),
@@ -49,7 +50,12 @@ export default function CadastrarAvaliacao(){
     const {register, control, handleSubmit, formState: {errors}} = useForm<RegistrerAvaliacaoSchema>({resolver: zodResolver(RegistrerAvaliacaoSchema)});
 
     function registrarAvaliacao(data:RegistrerAvaliacaoSchema){
-        console.log(data)
+        const codFuncion = getCookie("UserFuncCod")
+        if(codFuncion != undefined) {
+            data.avaliacaoFuncionario.funcionarios.codFuncionario = parseInt(getCookie("UserFuncCod") as string)
+        }else {
+            return
+        }
         axios.post("http://localhost:8080/avaliacaofuncionarios", data)
             .then(function (response) {
                 setSucesso(true);

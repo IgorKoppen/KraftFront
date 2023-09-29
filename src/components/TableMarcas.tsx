@@ -142,11 +142,6 @@ const TableMarca = () => {
 
                 renderRowActions={({ row, table }) => (
                     <Box sx={{ display: 'flex', gap: '1rem' }}  >
-                        <Tooltip arrow placement="left" title="Editar">
-                            <IconButton  onClick={() => table.setEditingRow(row)}>
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
                         <Tooltip arrow placement="right" title="Deletar">
                             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                 <Delete />

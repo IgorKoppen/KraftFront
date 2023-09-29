@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form";
 import {useState} from "react";
 import axios from "axios";
+import {useRouter} from "next/navigation";
 
 const RegistrerUserSchema = z.object({
     primeroNome: z.string().nonempty("O primeiro nome não pode estar vazio").max(20, "No maximo 20 letras"),
@@ -24,7 +25,7 @@ type RegistrerUserSchema = z.infer<typeof RegistrerUserSchema>
 export default function Registration() {
     const [sucesso,setSucesso] = useState(false);
     const {register, handleSubmit, formState: {errors}} = useForm<RegistrerUserSchema>({resolver: zodResolver(RegistrerUserSchema)});
-
+    const router = useRouter()
     function registrarUsuario(data:RegistrerUserSchema){
         axios.post("http://localhost:8080/clientes", data)
             .then(function (response) {

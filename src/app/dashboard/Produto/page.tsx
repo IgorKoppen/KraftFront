@@ -5,6 +5,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import axios from "axios";
 import dynamic from "next/dynamic";
+import {getCookie} from "typescript-cookie";
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
@@ -19,9 +20,9 @@ const RegistrerProdutoSchema = z.object({
     produto: z.object({
             nome: z.string().nonempty("Não pode estar vazio!"),
             descricao: z.string().nonempty("Não pode estar vazio!"),
-            funcionario: z.object({
-                codFuncionario: z.number().int().positive()
-            }).default({codFuncionario: 2}),
+        funcionario: z.object({
+                codFuncionario: z.number().int().positive().optional()
+            }).default({}),
         marca: z.object({
             codMarca: z.number().int().positive()
         }),
@@ -42,10 +43,15 @@ export default function AdicionarProduto(){
     const {register,control, handleSubmit, formState: {errors}} = useForm<RegistrerProdutoSchema>({resolver: zodResolver(RegistrerProdutoSchema)});
 
         function registrarProduto(data:RegistrerProdutoSchema){
-        let formData = new FormData();
+            const codFuncion = getCookie("UserFuncCod")
+            let formData = new FormData();
+            if(codFuncion != undefined) {
+                data.produto.funcionario.codFuncionario = parseInt(getCookie("UserFuncCod") as string)
+            }else {
+                return
+            }
         formData.append('produto', JSON.stringify(data.produto));
         formData.append('file', data.file[0]);
-        console.log(data.produto)
         axios.post("http://localhost:8080/produto", formData).then(function (response) {
         }).catch(function (error) {
             console.log(error);

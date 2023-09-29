@@ -15,7 +15,7 @@ interface tag{
 
 
 
-export default function DropdownTag({ control, name }:any) {
+export default function DropdownTags({ control, name }:any) {
     const [Marcas, setMarcas] = useState<tag[]>([]);
 
     useEffect(() => {
@@ -30,7 +30,7 @@ export default function DropdownTag({ control, name }:any) {
             <Controller
                 name={name}
                 control={control}
-                defaultValue="1"
+                defaultValue={1}
                 render={({ field }) => (
                     <select {...field} onChange={(e) => {
                         field.onChange(Number(e.target.value));  // default handler from the Controller

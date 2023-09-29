@@ -1,7 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import Providers from "@/components/Providers";
+
 
 
 
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br" className="bg-white">
 
-      <body className={inter.className}> <Providers>{children}</Providers></body>
+      <body className={inter.className}> {children}</body>
     </html>
   )
 }
