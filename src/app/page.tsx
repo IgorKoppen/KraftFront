@@ -1,11 +1,14 @@
-import Navbar from "@/components/Navbar";
+"use client"
 import Banner from "@/components/Banner";
 import Footer from "@/components/Footer";
-import dynamic from 'next/dynamic'
 import SwiperMarcas from "@/components/SwiperMarcas";
 import SwiperProdutos from "@/components/SwiperProdutos";
-
-export default async function Home() {
+import dynamic from "next/dynamic";
+const Navbar = dynamic(
+    () => import('@/components/Navbar'),
+    { ssr: false }
+)
+export default function Home() {
 
   return (
     <>

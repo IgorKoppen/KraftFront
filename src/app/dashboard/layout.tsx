@@ -27,11 +27,9 @@ export default  function Layout({
        if(email === undefined || senha === undefined){
            return router.push('/singinDashBord');
        }else {
-           console.log(JSON.parse(email), JSON.parse(senha))
            const params = new URLSearchParams();
            params.append('email', JSON.parse(email));
            params.append('senha', JSON.parse(senha));
-
            axios.post("http://localhost:8080/funcionarios/login", params).catch(function (error: any) {
                router.push('/singinDashBord')
            });

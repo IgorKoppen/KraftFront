@@ -1,10 +1,12 @@
-"use client"
+
+
 import Image from "next/image";
 import Logo from "../../public/LogoKraftv2 1.svg";
 import profilePic from "../../public/user-interface1.png";
 import Link from 'next/link'
 import {getCookie} from "typescript-cookie";
 export default function Navbar(){
+
     const userName = getCookie('UserName') as string
 
     return(

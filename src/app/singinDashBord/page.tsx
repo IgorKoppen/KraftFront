@@ -39,9 +39,9 @@ export default function SinginDashBord() {
 
         axios.post("http://localhost:8080/funcionarios/login", params).then(function (response:any) {
             const data:user = response.data;
-            setCookie('UserFuncCod', JSON.stringify(data.codFuncionario), { expires: 0.001  })
-            setCookie('EmailFun', JSON.stringify(data.emailFuncionario), { expires: 0.001  })
-            setCookie('senhaFun', JSON.stringify(data.senha), { expires: 0.001  })
+            setCookie('UserFuncCod', JSON.stringify(data.codFuncionario), { expires: 1,path: "/",sameSite:"Lax"  })
+            setCookie('EmailFun', JSON.stringify(data.emailFuncionario), { expires: 1,path: "/",sameSite:"Lax"  })
+            setCookie('senhaFun', JSON.stringify(data.senha), { expires: 1, path: "/",sameSite:"Lax"})
             router.replace('/dashboard', { scroll: false })
         }).catch(function (error:any) {
           setError(error.response.data)

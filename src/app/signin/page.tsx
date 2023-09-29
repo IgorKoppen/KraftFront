@@ -33,14 +33,15 @@ export default function Singin() {
     const {register, handleSubmit, formState: {errors}} = useForm<LogarUserSchema>({resolver: zodResolver(LogarUserSchema)});
     const [error, setError] = useState("");
     function logarSubmit(data:LogarUserSchema){
+
         const params = new URLSearchParams();
         params.append('email', data.email);
         params.append('senha', data.senha);
 
         axios.post("http://localhost:8080/clientes/login", params).then(function (response:any) {
             const data:user = response.data;
-            setCookie('UserCod', JSON.stringify(data.codCliente), { expires: 0.001 })
-            setCookie('UserName', JSON.stringify(data.userName), { expires: 0.001 })
+            setCookie('UserCode', JSON.stringify(data.codCliente), {expires: 1, path: "/",sameSite:"Strict"})
+            setCookie('UserName', JSON.stringify(data.userName), { expires: 1,path: "/",sameSite:"Strict"  })
             router.replace('/', { scroll: false })
         }).catch(function (error:any) {
           setError(error.response.data)

@@ -29,7 +29,7 @@ interface marca{
 
 
 const RegistrerAvaliacaoMarcaSchema = z.object({
-    messagem: z.string().nonempty(),
+    mensagem: z.string().nonempty(),
     tagsCliente: z.array(z.object({codTag: z.number().int().optional()})).default([]),
     clientes: z.object({codCliente: z.number().optional()}).default({}),
     nota: z.number().int().min(1).max(5).default(1),
@@ -51,18 +51,17 @@ type RegistrerAvaliacaoMarcaSchema = z.infer<typeof RegistrerAvaliacaoMarcaSchem
         });
     }, [marcaId]);
 
-     function registrarAvalicaoProduto(data:RegistrerAvaliacaoMarcaSchema){
-         const userCod =  parseInt(getCookie('UserCod') as string);
-         if(userCod != undefined) {
-             data.clientes.codCliente = userCod
-         }else {
+     function registrarAvalicaoMarca(data:RegistrerAvaliacaoMarcaSchema){
+         const UserCode = getCookie('UserCode') as string
+         if(UserCode === undefined) {
+             router.push('/signin', { scroll: false })
              return
          }
+         data.clientes.codCliente = parseInt(UserCode)
          data.marcas.codMarca = marcaId;
          data.tagsCliente = codTags
-         axios.post("http://localhost:8080/clientes", data)
+         axios.post("http://localhost:8080/avaliacaoclientes", data)
              .then(function (response) {
-                 console.log(response);
              }).catch(function (error) {
              router.push('/signin', { scroll: false })
              console.log(error);
@@ -86,13 +85,13 @@ type RegistrerAvaliacaoMarcaSchema = z.infer<typeof RegistrerAvaliacaoMarcaSchem
                             </h1>
                             <h2 className="text-lg font-bold leading-tight tracking-tight text-white">Marca: {marca?.nome}</h2>
 
-                            <form className="space-y-4 md:space-y-6" action="#">
+                            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(registrarAvalicaoMarca)}>
                                 <div>
                                     <label htmlFor="mensagem" className="block mb-2 text-sm font-medium text-white ">Mensagem</label>
-                                    <textarea maxLength={200}  name="postContent" rows={2} cols={4} placeholder="Digite aqui" className="input input-bordered input-lg bg-gray-50 border border-gray-300 text-gray-900 w-full h-52 align-text-top resize-none p-2.5 pt-1"/>
+                                    <textarea maxLength={200}  rows={2} cols={4} placeholder="Digite aqui" className="input input-bordered input-lg bg-gray-50 border border-gray-300 text-gray-900 w-full h-52 align-text-top resize-none p-2.5 pt-1" {...register("mensagem")}/>
                                 </div>
                                 <h2  className="py-2 text-white">Adicionar uma tag:</h2>
-                                <SelectTags control={control}   name='tagsClientes' onSelectedTags={handleSelectedTags} ></SelectTags>
+                                <SelectTags control={control}   name='tagsCliente' onSelectedTags={handleSelectedTags} ></SelectTags>
                                 <h2  className="py-2 text-white">Nota:</h2>
                                 <RadioGroupRating control={control}  name='nota'></RadioGroupRating>
                                 <div className="flex justify-between">
