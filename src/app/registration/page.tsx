@@ -30,7 +30,6 @@ export default function Registration() {
         axios.post("http://localhost:8080/clientes", data)
             .then(function (response) {
                 setSucesso(true)
-                console.log(response);
             }).catch(function (error) {
             console.log(error);
         });

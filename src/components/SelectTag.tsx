@@ -23,35 +23,32 @@ interface tags{
     nomeTag: string
 }
 
-export default function AnimatedMulti({ control, name }:any) {
+export default function AnimatedMulti({ control, name,onSelectedTags }:any) {
     const [options, setOptions] = useState([]);
-    const [selectedTags, setSelectedTags] = useState([]);
+
 
     useEffect(() => {
         Options().then((options) => setOptions(options));
     }, []);
 
     const handleChange = (selectedOptions:any) => {
-        setSelectedTags(selectedOptions);
-    };
-
-    // Return an array of codTags
-    const getCodTags = () => {
-        return selectedTags.map((tag : tags) => tag.codTag);
+        onSelectedTags(selectedOptions);
     };
 
     return (
         <Controller
             control={control}
             name={name}
-            render={({ field: { onChange, value, ref }}) => (
+            render={({ field }) => (
                 <Select
+                    {...field}
+                    onChange={handleChange}
                     closeMenuOnSelect={false}
                     components={animatedComponents}
                     isMulti
-                    value={value}
                     options={options}
-                    onChange={handleChange}
+                    name={name}
+                    instanceId="animated-multi"
                 />
             )}
         />

@@ -13,6 +13,11 @@ import Link from "next/link";
 import {z} from "zod";
 import SelectTag from "@/components/SelectTag";
 import RadioGroupRating from "@/components/RadioGroupRating";
+import {useRouter} from "next/navigation";
+import SelectTags from "@/components/SelectTag";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {getCookie} from "typescript-cookie";
 
 interface pageProps{
     params: {id: number}
@@ -21,26 +26,52 @@ interface marca{
     nome: string,
     funcionario : {codFuncionario: number}
 }
-const RegistrerAvaliacaoProdutoSchema = z.object({
+
+
+const RegistrerAvaliacaoMarcaSchema = z.object({
     messagem: z.string().nonempty(),
     tagsCliente: z.array(z.object({codTag: z.number().int().optional()})).default([]),
-    clientes: z.object({codCliente: z.number()}),
-    nota: z.number().int().min(1).max(5),
-    marca: z.object({codMarca: z.number().int().optional()})
+    clientes: z.object({codCliente: z.number().optional()}).default({}),
+    nota: z.number().int().min(1).max(5).default(1),
+    marcas: z.object({codMarca: z.number().int().optional()}).default({})
 })
+type RegistrerAvaliacaoMarcaSchema = z.infer<typeof RegistrerAvaliacaoMarcaSchema>
 
  function Avaliacao({params}:pageProps) {
+     const router = useRouter()
+     const [codTags, setCodTags] = useState([]);
     const marcaId = params.id;
     const [marca,setMarca] = useState<marca>();
+     const {register,control, handleSubmit, formState: {errors}} = useForm<RegistrerAvaliacaoMarcaSchema>({resolver: zodResolver(RegistrerAvaliacaoMarcaSchema)});
     useEffect(() => {
         axios.get(`http://localhost:8080/marcas/${marcaId}`).then(function (response) {
             setMarca(response.data);
         }).catch(function (error) {
             console.log(error);
         });
-    }, []);
+    }, [marcaId]);
 
-
+     function registrarAvalicaoProduto(data:RegistrerAvaliacaoMarcaSchema){
+         const userCod =  parseInt(getCookie('UserCod') as string);
+         if(userCod != undefined) {
+             data.clientes.codCliente = userCod
+         }else {
+             return
+         }
+         data.marcas.codMarca = marcaId;
+         data.tagsCliente = codTags
+         axios.post("http://localhost:8080/clientes", data)
+             .then(function (response) {
+                 console.log(response);
+             }).catch(function (error) {
+             router.push('/signin', { scroll: false })
+             console.log(error);
+         });
+     }
+     const handleSelectedTags = (selectedTags:any) => {
+         const codTags = selectedTags.map((tag : any) => ({codTag: tag.value}));
+         setCodTags(codTags);
+     };
     return(
         <>
             <section className=" bg-MainColor ">
@@ -60,8 +91,10 @@ const RegistrerAvaliacaoProdutoSchema = z.object({
                                     <label htmlFor="mensagem" className="block mb-2 text-sm font-medium text-white ">Mensagem</label>
                                     <textarea maxLength={200}  name="postContent" rows={2} cols={4} placeholder="Digite aqui" className="input input-bordered input-lg bg-gray-50 border border-gray-300 text-gray-900 w-full h-52 align-text-top resize-none p-2.5 pt-1"/>
                                 </div>
-                                <SelectTag ></SelectTag>
-                                <RadioGroupRating></RadioGroupRating>
+                                <h2  className="py-2 text-white">Adicionar uma tag:</h2>
+                                <SelectTags control={control}   name='tagsClientes' onSelectedTags={handleSelectedTags} ></SelectTags>
+                                <h2  className="py-2 text-white">Nota:</h2>
+                                <RadioGroupRating control={control}  name='nota'></RadioGroupRating>
                                 <div className="flex justify-between">
                                     <Link href="/" className="w-full"> <button type="submit" className="w-2/5 text-white bg-indigo-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">Voltar</button></Link>
                                     <button type="submit" className="w-2/5 text-white bg-indigo-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">Enviar</button>

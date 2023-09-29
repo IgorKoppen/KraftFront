@@ -21,23 +21,23 @@ const customIcons: {
     };
 } = {
     1: {
-        icon: <SentimentVeryDissatisfiedIcon color="error" />,
+        icon: <SentimentVeryDissatisfiedIcon color="error" fontSize="large" />,
         label: 'Muito Insatisfeito',
     },
     2: {
-        icon: <SentimentDissatisfiedIcon color="error" />,
+        icon: <SentimentDissatisfiedIcon color="error" fontSize="large"/>,
         label: 'Insatisfeito',
     },
     3: {
-        icon: <SentimentSatisfiedIcon color="warning" />,
+        icon: <SentimentSatisfiedIcon color="warning" fontSize="large"/>,
         label: 'Neutro',
     },
     4: {
-        icon: <SentimentSatisfiedAltIcon color="success" />,
+        icon: <SentimentSatisfiedAltIcon color="success" fontSize="large"/>,
         label: 'Satisfeito',
     },
     5: {
-        icon: <SentimentVerySatisfiedIcon color="success" />,
+        icon: <SentimentVerySatisfiedIcon color="success" fontSize="large"/>,
         label: 'muito satisfeito',
     },
 };
@@ -52,12 +52,14 @@ export default function RadioGroupRating({control,name}:any) {
         <Controller
             control={control}
             name={name}
-            defaultValue={1}
+            defaultValue={5}
             render={({ field }) => (
         <StyledRating
-            {...field} onClick={(e:any) => { field.onChange(Number(e.target.value))}}
+            {...field}
+            onChange={(e:any) => {field.onChange(Number(e.target.value))}}
             name="highlight-selected-only"
-            defaultValue={1}
+            value={Number(field.value)}
+            defaultValue={5}
             IconContainerComponent={IconContainer}
             getLabelText={(value: number) => customIcons[value].label}
             highlightSelectedOnly
